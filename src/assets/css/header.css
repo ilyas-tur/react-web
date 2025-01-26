@@ -1,0 +1,46 @@
+/* Общие стили для хедера */
+.header {
+  background-color: #1e90ff; /* Цвет фона (синий) */
+  color: white; /* Белый текст */
+  padding: 16px; /* Внутренние отступы */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Тень */
+}
+
+/* Контейнер навигации */
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Логотип */
+.logo a {
+  font-size: 24px;
+  font-weight: bold;
+  text-decoration: none;
+  color: white;
+}
+
+/* Список ссылок */
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 16px; /* Отступ между ссылками */
+  margin: 0;
+  padding: 0;
+}
+
+/* Ссылка */
+.nav-link {
+  text-decoration: none; /* Убрать подчеркивание */
+  color: white;
+  font-size: 16px;
+  transition: color 0.3s ease; /* Анимация при наведении */
+}
+
+/* Ховер-эффект для ссылок */
+.nav-link:hover {
+  color: #ffcc00; /* Желтый при наведении */
+}
