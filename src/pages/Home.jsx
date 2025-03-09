@@ -1,47 +1,61 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import useFetch from "../hooks/useFetch";
+import useCountdown from "../hooks/useCountdown";
+import Loader from "../components/shared/Loader";
+import Error from "../components/shared/Error";
+import BookOfTheDay from "../components/books/BookOfTheDay";
+import BooksList from "../components/books/BooksList";
+import { ROUTES } from "../utils/consts";
+import useToggleFavorite from "../hooks/useToggleFavorite";
+import useBookOfTheDay from "../hooks/useBookOfTheDay";
+import { API_BASE_URL } from "../config/api";
 import "../assets/css/home.css";
 
 const Home = () => {
-  const [books, setBooks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const { toggleFavorite, isFavorite } = useToggleFavorite();
+  const { data, loading, error } = useFetch(`${API_BASE_URL}/new`);
 
-  useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        const response = await fetch("https://api.itbook.store/1.0/new");
-        const data = await response.json();
-        setBooks(data.books);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const books = data && data.books ? data.books : [];
 
-    fetchBooks();
-  }, []);
+  const { bookOfTheDay, expiryTimestamp } = useBookOfTheDay(books);
+  const timeLeft = useCountdown(expiryTimestamp);
 
-  if (loading) return <p className="loading">Loading...</p>;
-  if (error) return <p className="error">Error: {error}</p>;
+  const [flip, setFlip] = useState(false);
+
+  const handleCardClick = useCallback(
+    (e) => {
+      e.preventDefault();
+      setFlip(true);
+      setTimeout(() => {
+        navigate(ROUTES.BOOKS.replace(":id", bookOfTheDay.isbn13));
+      }, 600);
+    },
+    [navigate, bookOfTheDay]
+  );
+
+  if (loading) return <Loader />;
+  if (error) return <Error />;
 
   return (
     <div className="container">
+      {bookOfTheDay && (
+        <BookOfTheDay
+          book={bookOfTheDay}
+          flip={flip}
+          onCardClick={handleCardClick}
+          onFavoriteToggle={(e) => toggleFavorite(bookOfTheDay, e)}
+          isFavorite={isFavorite}
+          timeLeft={timeLeft}
+        />
+      )}
       <h1 className="title">New Books</h1>
-      <div className="books-grid">
-        {books.map((book) => (
-          <Link
-            key={book.isbn13}
-            to={`/books/${book.isbn13}`}
-            className="book-card"
-          >
-            <img src={book.image} alt={book.title} className="book-image" />
-            <h2 className="book-title">{book.title}</h2>
-            <p className="book-subtitle">{book.subtitle}</p>
-          </Link>
-        ))}
-      </div>
+      <BooksList
+        books={books}
+        onFavoriteToggle={(book, e) => toggleFavorite(book, e)}
+        isFavorite={isFavorite}
+      />
     </div>
   );
 };

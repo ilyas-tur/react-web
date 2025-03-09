@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "../assets/css/contact.css";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -6,6 +7,7 @@ const Contact = () => {
     email: "",
     message: "",
   });
+  const [submitted, setSubmitted] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -14,45 +16,57 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert("Message sent!");
+    setSubmitted(true);
+    setTimeout(() => setSubmitted(false), 3000);
     setFormData({ name: "", email: "", message: "" });
   };
 
   return (
-    <div className="container">
-      <h1 className="heading">Contact Us</h1>
-      <form onSubmit={handleSubmit} className="form">
+    <div className="contact-container">
+      <h1 className="contact-heading">Contact Us</h1>
+      {submitted && (
+        <div className="success-message animate-fade-in">
+          <p>Thank you for contacting us! Your message has been sent.</p>
+        </div>
+      )}
+      <form onSubmit={handleSubmit} className="contact-form">
         <div className="form-group">
-          <label className="label">Name</label>
+          <label className="form-label">Name</label>
           <input
             type="text"
             name="name"
+            placeholder="Your name"
             value={formData.name}
             onChange={handleChange}
-            className="input"
+            className="form-input"
+            required
           />
         </div>
         <div className="form-group">
-          <label className="label">Email</label>
+          <label className="form-label">Email</label>
           <input
             type="email"
             name="email"
+            placeholder="Your email"
             value={formData.email}
             onChange={handleChange}
-            className="input"
+            className="form-input"
+            required
           />
         </div>
         <div className="form-group">
-          <label className="label">Message</label>
+          <label className="form-label">Message</label>
           <textarea
             name="message"
+            placeholder="Your message"
             value={formData.message}
             onChange={handleChange}
-            className="textarea"
+            className="form-textarea"
+            required
           ></textarea>
         </div>
-        <button type="submit" className="button">
-          Send
+        <button type="submit" className="submit-button">
+          Send Message
         </button>
       </form>
     </div>

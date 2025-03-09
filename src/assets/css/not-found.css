@@ -1,0 +1,21 @@
+.not-found {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.not-found-header {
+  font-size: 32px;
+  color: #333;
+}
+
+.not-found-link {
+  display: inline-block;
+  margin-top: 20px;
+  text-decoration: none;
+  color: #007bff;
+  font-size: 18px;
+}
+
+.not-found-link:hover {
+  text-decoration: underline;
+}
